@@ -1,32 +1,48 @@
-import React, { useState } from "react"
-import { View, Text, SafeAreaView, TextInput } from "react-native";
+import React from "react"
+import { Text, SafeAreaView, TextInput, FlatList } from "react-native";
 import { useBloc } from "../../../../state";
 import Word from "../../domain/entities/word";
 import RhymesCubit from "../cubits/rhymes-cubit";
 import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "../cubits/rhymes-state";
 
 const WordRhymePage: React.FC = () => {
-  const [rhymes, {getRhymes}] = useBloc(RhymesCubit);
+  const [rhymesState, {getRhymes}] = useBloc(RhymesCubit);
 
   const onInputChange = async (text: string) => {
-    await getRhymes(text);
+    getRhymes(text);
   }
 
   const buildRhymes = (state: RhymesState) => {
-    if(state instanceof RhymesLoading) {
-      return <Text>Loading...</Text>;
+    if(state instanceof RhymesInitial) {
+      return buildInitial();
+    } else if(state instanceof RhymesLoading) {
+      return buildLoading();
     } else if(state instanceof RhymesLoaded) {
-      return state.rhymes.map((rhyme: Word) => {
-        return <Text>{rhyme.word}</Text>;
-      });
+      return buildLoaded(state.rhymes);
     } else if(state instanceof RhymesError) {
-      return <Text>{state.message}</Text>;
+      return buildError(state.message);
     }
   }
 
+  const buildInitial = () => {
+    return <Text>Enter a word to see rhymes</Text>
+  }
+
+  const buildLoading = () => {
+    return <Text>Loading...</Text>;
+  }
+
+  const buildLoaded = (rhymes: Word[]) => {
+    return <FlatList data={rhymes} renderItem={({item}) => <Text>{item.word}</Text>} />
+  }
+
+  const buildError = (message: string) => {
+    return <Text>{message}</Text>;
+  }
+
   return <SafeAreaView>
-    <TextInput onChangeText={onInputChange}>Test</TextInput>
-    {buildRhymes(rhymes)}
+    <TextInput onChangeText={onInputChange} />
+    {buildRhymes(rhymesState)}
   </SafeAreaView>;
 }
 
