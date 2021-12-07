@@ -1,11 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
+import WordRhymePage from './features/word/ui/views/WordRhymePage';
 
 const App: React.FC = () => {
   return (
     <View>
-      <Text>Search for synonyms:</Text>
+      <WordRhymePage></WordRhymePage>
     </View>
   );
 };

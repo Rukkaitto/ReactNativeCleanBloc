@@ -1,5 +1,6 @@
 import Word from "../../domain/entities/word";
 import WordRepository from "../../domain/repositories/repository";
+import WordRemoteDatasource from "../datasources/remote-datasource";
 
 export default class WordRepositoryImpl implements WordRepository {
   remoteDatasource: WordRemoteDatasource;
