@@ -8,11 +8,11 @@ import WordRhymePage from './features/word/ui/views/WordRhymePage';
 const App: React.FC = () => {
   return (
     <DependencyInjector>
-      <View>
-        <RecoilRoot>
-          <WordRhymePage/>
-        </RecoilRoot>
-      </View>
+      <RecoilRoot>
+        <View>
+            <WordRhymePage/>
+        </View>
+      </RecoilRoot>
     </DependencyInjector>
   );
 };

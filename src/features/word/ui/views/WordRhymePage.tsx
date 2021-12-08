@@ -26,9 +26,9 @@ const WordRhymePage: React.FC = () => {
           renderItem={({item}) => <Text style={styles.item}>{item.word} ({item.numSyllables} syllables)</Text>}
         />
       case 'loading':
-        return <Text>Loading...</Text>;
+        return <Text style={styles.item}>Loading...</Text>;
       case 'hasError':
-        return <Text>{(rhymesLoadable.contents as Error).message}</Text>;
+        return <Text style={styles.error}>{(rhymesLoadable.contents as Error).message}</Text>;
       default:
         break;
     }
@@ -52,6 +52,10 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
+  },
+  error: {
+    fontSize: 18,
+    color: 'red',
   },
 });
 
