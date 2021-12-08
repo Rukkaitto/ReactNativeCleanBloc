@@ -1,31 +1,31 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Text, SafeAreaView, TextInput, FlatList } from "react-native";
-import { useBloc } from "../../../../state";
+import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { Context } from "../../../../DependencyInjector";
 import Word from "../../domain/entities/word";
-import RhymesCubit from "../cubits/rhymes-cubit";
-import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "../cubits/rhymes-state";
+import { inputState } from "../recoil/atoms";
 
 const WordRhymePage: React.FC = () => {
-  const [rhymesState, {getRhymes}] = useBloc(RhymesCubit);
+  const setInput = useSetRecoilState(inputState);
+  const selectors = useContext(Context);
 
   const onInputChange = async (text: string) => {
-    getRhymes(text);
+    setInput(text);
   }
 
-  const buildRhymes = (state: RhymesState) => {
-    if(state instanceof RhymesInitial) {
-      return buildInitial();
-    } else if(state instanceof RhymesLoading) {
-      return buildLoading();
-    } else if(state instanceof RhymesLoaded) {
-      return buildLoaded(state.rhymes);
-    } else if(state instanceof RhymesError) {
-      return buildError(state.message);
+  const buildRhymes = () => {
+    const rhymesLoadable = useRecoilValueLoadable(selectors.wordSelectorManager.rhymesQuery);
+
+    switch (rhymesLoadable.state) {
+      case 'hasValue':
+        return buildLoaded(rhymesLoadable.contents);
+      case 'loading':
+        return buildLoading();
+      case 'hasError':
+        return buildError((rhymesLoadable.contents as Error).message);
+      default:
+        break;
     }
-  }
-
-  const buildInitial = () => {
-    return <Text>Enter a word to see rhymes</Text>
   }
 
   const buildLoading = () => {
@@ -33,7 +33,11 @@ const WordRhymePage: React.FC = () => {
   }
 
   const buildLoaded = (rhymes: Word[]) => {
-    return <FlatList data={rhymes} renderItem={({item}) => <Text>{item.word}</Text>} />
+    return <FlatList 
+      keyExtractor={(item, _) => item.word} 
+      data={rhymes} 
+      renderItem={({item}) => <Text>{item.word}</Text>}
+    />
   }
 
   const buildError = (message: string) => {
@@ -42,7 +46,7 @@ const WordRhymePage: React.FC = () => {
 
   return <SafeAreaView>
     <TextInput onChangeText={onInputChange} />
-    {buildRhymes(rhymesState)}
+    {buildRhymes()}
   </SafeAreaView>;
 }
 

@@ -13,6 +13,7 @@ export class WordRemoteDatasourceImpl implements WordRemoteDatasource {
   }
 
   async getRhymes(word: String): Promise<WordModel[]> {
+    console.log('getRhymes');
     const response = await this.axios.get<WordModel[]>("/words", { params: { "rel_rhy": word } });
     return response.data;
   }
