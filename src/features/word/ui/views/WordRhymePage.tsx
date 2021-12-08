@@ -1,20 +1,22 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import { Text, SafeAreaView, TextInput, FlatList } from "react-native";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { Context } from "../../../../DependencyInjector";
 import Word from "../../domain/entities/word";
 import { inputState } from "../recoil/atoms";
+import debounce from "lodash/debounce";
 
 const WordRhymePage: React.FC = () => {
   const setInput = useSetRecoilState(inputState);
-  const selectors = useContext(Context);
+  const [debouncedSetInput] = useState(() => debounce(setInput, 800));
+  const dependencies = useContext(Context);
 
   const onInputChange = async (text: string) => {
-    setInput(text);
+    debouncedSetInput(text);
   }
 
   const buildRhymes = () => {
-    const rhymesLoadable = useRecoilValueLoadable(selectors.wordSelectorManager.rhymesQuery);
+    const rhymesLoadable = useRecoilValueLoadable(dependencies.wordSelectorManager.rhymesQuery);
 
     switch (rhymesLoadable.state) {
       case 'hasValue':
@@ -36,7 +38,7 @@ const WordRhymePage: React.FC = () => {
     return <FlatList 
       keyExtractor={(item, _) => item.word} 
       data={rhymes} 
-      renderItem={({item}) => <Text>{item.word}</Text>}
+      renderItem={({item}) => <Text>{item.word} - {item.numSyllables} syllables</Text>}
     />
   }
 

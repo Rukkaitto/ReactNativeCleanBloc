@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
+    "@types/lodash": "^4.14.177",
     "axios": "^0.24.0",
     "bloc-react": "^0.1.21",
     "expo": "~43.0.2",
     "expo-status-bar": "~1.1.0",
+    "lodash": "^4.17.21",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",

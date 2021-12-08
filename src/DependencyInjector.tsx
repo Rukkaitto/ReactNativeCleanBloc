@@ -5,11 +5,11 @@ import WordRepositoryImpl from "./features/word/data/repositories/repository-imp
 import { inputState } from "./features/word/ui/recoil/atoms";
 import WordSelectorManager from "./features/word/ui/recoil/word-selector-manager";
 
-interface SelectorManagers {
+interface Dependencies {
   wordSelectorManager: WordSelectorManager;
 }
 
-export const Context = createContext({} as SelectorManagers);
+export const Context = createContext({} as Dependencies);
 
 const DependencyInjector: React.FC = ({children}) => {
   const axiosInstance = axios.create({ baseURL: 'https://api.datamuse.com/' });
