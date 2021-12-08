@@ -16,6 +16,7 @@ const RoundedTextInput: React.FC<RoundedTextInputProps> = (props) => {
 
 const styles = StyleSheet.create({
   input: {
+    fontSize: 15,
     height: 40,
     margin: 12,
     borderWidth: 1,
