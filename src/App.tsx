@@ -1,5 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
+import "reflect-metadata";
+import "./di";
 import WordRhymePage from './features/word/ui/views/WordRhymePage';
 
 const App: React.FC = () => {
