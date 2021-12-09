@@ -1,16 +1,14 @@
 import { BlocBuilder } from "@felangel/react-bloc";
-import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, SafeAreaView, Text, TextInput } from "react-native";
-import { WordRemoteDatasourceImpl } from "../../data/datasources/remote-datasource";
-import WordRepositoryImpl from "../../data/repositories/repository-impl";
+import Container from "typedi";
 import Word from "../../domain/entities/word";
 import RhymesBloc from "../bloc/rhymes-bloc";
 import { GetRhymesEvent } from "../bloc/rhymes-event";
 import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes-state";
 
 const WordRhymePage: React.FC = () => {
-  const rhymesBloc = new RhymesBloc(new WordRepositoryImpl(new WordRemoteDatasourceImpl(axios.create({ baseURL: "https://api.datamuse.com" }))));
+  const rhymesBloc = Container.get(RhymesBloc);
 
   const handleChangeText = (text: string) => {
     rhymesBloc.add(new GetRhymesEvent(text));

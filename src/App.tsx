@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import React from 'react';
 import { View } from 'react-native';
 import WordRhymePage from './features/word/ui/views/WordRhymePage';

@@ -1,13 +1,11 @@
+import { Service } from "typedi";
 import Word from "../../domain/entities/word";
 import WordRepository from "../../domain/repositories/repository";
-import WordRemoteDatasource from "../datasources/remote-datasource";
+import { WordRemoteDatasourceImpl } from "../datasources/remote-datasource";
 
-export default class WordRepositoryImpl implements WordRepository {
-  remoteDatasource: WordRemoteDatasource;
-
-  constructor(remoteDatasource: WordRemoteDatasource) {
-    this.remoteDatasource = remoteDatasource;
-  }
+@Service()
+export class WordRepositoryImpl implements WordRepository {
+  constructor(private remoteDatasource: WordRemoteDatasourceImpl) { }
 
   getRhymes(word: string): Promise<Word[]> {
     return this.remoteDatasource.getRhymes(word);

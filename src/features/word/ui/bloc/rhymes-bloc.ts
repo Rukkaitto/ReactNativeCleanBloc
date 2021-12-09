@@ -1,15 +1,13 @@
 import { Bloc } from "@felangel/bloc";
-import WordRepository from "../../domain/repositories/repository";
+import { Service } from "typedi";
+import { WordRepositoryImpl } from "../../data/repositories/repository-impl";
 import { GetRhymesEvent, RhymesEvent } from "./rhymes-event";
 import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "./rhymes-state";
 
-
+@Service()
 export default class RhymesBloc extends Bloc<RhymesEvent, RhymesState> {
-  repository: WordRepository;
-
-  constructor(repository: WordRepository) {
+  constructor(private repository: WordRepositoryImpl) {
     super(new RhymesInitial());
-    this.repository = repository;
   }
 
   async *mapEventToState(event: RhymesEvent) {
