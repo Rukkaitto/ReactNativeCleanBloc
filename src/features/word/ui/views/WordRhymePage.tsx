@@ -1,6 +1,6 @@
 import { BlocBuilder } from "@felangel/react-bloc";
 import React from "react";
-import { FlatList, SafeAreaView, Text, TextInput } from "react-native";
+import { FlatList, SafeAreaView, Text, TextInput, StyleSheet } from "react-native";
 import { container } from "tsyringe";
 import Word from "../../domain/entities/word";
 import RhymesBloc from "../bloc/rhymes-bloc";
@@ -39,7 +39,7 @@ const WordRhymePage: React.FC = () => {
     return <FlatList 
       keyExtractor={(item, _) => item.word}
       data={rhymes}
-      renderItem={({item}) => <Text>{item.word}</Text>}
+      renderItem={({item}) => <Text style={styles.item}>{item.word}</Text>}
     />
   }
 
@@ -48,12 +48,31 @@ const WordRhymePage: React.FC = () => {
   }
 
   return <SafeAreaView>
-    <TextInput onChangeText={handleChangeText}/>
+    <TextInput 
+      style={styles.input}
+      onChangeText={handleChangeText}
+      placeholder="Search for words that rhyme with..."
+    />
     <BlocBuilder<RhymesBloc, RhymesState> 
       bloc={rhymesBloc}
       builder={(state) => buildRhymes(state)}
     />
   </SafeAreaView>;
 }
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+});
 
 export default WordRhymePage;
