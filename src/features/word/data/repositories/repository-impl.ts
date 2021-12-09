@@ -1,11 +1,11 @@
-import { Service } from "typedi";
+import { inject, injectable } from "tsyringe";
 import Word from "../../domain/entities/word";
 import WordRepository from "../../domain/repositories/repository";
-import { WordRemoteDatasourceImpl } from "../datasources/remote-datasource";
+import WordRemoteDatasource from "../datasources/remote-datasource";
 
-@Service()
+@injectable()
 export class WordRepositoryImpl implements WordRepository {
-  constructor(private remoteDatasource: WordRemoteDatasourceImpl) { }
+  constructor(@inject('WordRemoteDatasource') private remoteDatasource: WordRemoteDatasource) { }
 
   getRhymes(word: string): Promise<Word[]> {
     return this.remoteDatasource.getRhymes(word);

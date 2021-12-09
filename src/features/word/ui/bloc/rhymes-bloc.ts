@@ -1,12 +1,12 @@
 import { Bloc } from "@felangel/bloc";
-import { Service } from "typedi";
-import { WordRepositoryImpl } from "../../data/repositories/repository-impl";
+import { inject, injectable } from "tsyringe";
+import WordRepository from "../../domain/repositories/repository";
 import { GetRhymesEvent, RhymesEvent } from "./rhymes-event";
 import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "./rhymes-state";
 
-@Service()
+@injectable()
 export default class RhymesBloc extends Bloc<RhymesEvent, RhymesState> {
-  constructor(private repository: WordRepositoryImpl) {
+  constructor(@inject('WordRepository') private repository: WordRepository) {
     super(new RhymesInitial());
   }
 

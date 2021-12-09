@@ -1,18 +1,17 @@
-import axios from "axios";
-import { Service } from "typedi";
+import { AxiosInstance } from "axios";
+import { inject, injectable } from "tsyringe";
 import WordModel from "../models/word-model";
 
 export default interface WordRemoteDatasource {
   getRhymes(word: String): Promise<WordModel[]>;
 }
 
-@Service()
+@injectable()
 export class WordRemoteDatasourceImpl implements WordRemoteDatasource {
-  constructor() { }
+  constructor(@inject('axios') private axiosInstance: AxiosInstance) { }
 
   async getRhymes(word: String): Promise<WordModel[]> {
-    const axiosInstance = axios.create({ baseURL: 'https://api.datamuse.com/' });
-    const response = await axiosInstance.get<WordModel[]>("/words", { params: { "rel_rhy": word } });
+    const response = await this.axiosInstance.get<WordModel[]>("/words", { params: { "rel_rhy": word } });
     return response.data;
   }
 }

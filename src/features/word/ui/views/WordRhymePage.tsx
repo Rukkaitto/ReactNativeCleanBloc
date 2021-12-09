@@ -1,14 +1,14 @@
 import { BlocBuilder } from "@felangel/react-bloc";
 import React from "react";
 import { FlatList, SafeAreaView, Text, TextInput } from "react-native";
-import Container from "typedi";
+import { container } from "tsyringe";
 import Word from "../../domain/entities/word";
 import RhymesBloc from "../bloc/rhymes-bloc";
 import { GetRhymesEvent } from "../bloc/rhymes-event";
 import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes-state";
 
 const WordRhymePage: React.FC = () => {
-  const rhymesBloc = Container.get(RhymesBloc);
+  const rhymesBloc = container.resolve(RhymesBloc);
 
   const handleChangeText = (text: string) => {
     rhymesBloc.add(new GetRhymesEvent(text));
