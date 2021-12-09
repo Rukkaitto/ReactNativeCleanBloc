@@ -10,9 +10,10 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@felangel/bloc": "^0.3.0",
+    "@felangel/react-bloc": "^0.3.0",
     "@types/axios": "^0.14.0",
     "axios": "^0.24.0",
-    "bloc-react": "^0.1.21",
     "expo": "~43.0.2",
     "expo-status-bar": "~1.1.0",
     "react": "17.0.1",

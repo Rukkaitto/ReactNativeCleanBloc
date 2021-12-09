@@ -1,26 +1,31 @@
-import React from "react"
-import { Text, SafeAreaView, TextInput, FlatList } from "react-native";
-import { useBloc } from "../../../../state";
+import { BlocBuilder } from "@felangel/react-bloc";
+import axios from "axios";
+import React, { useState } from "react";
+import { FlatList, SafeAreaView, Text, TextInput } from "react-native";
+import { WordRemoteDatasourceImpl } from "../../data/datasources/remote-datasource";
+import WordRepositoryImpl from "../../data/repositories/repository-impl";
 import Word from "../../domain/entities/word";
-import RhymesCubit from "../cubits/rhymes-cubit";
-import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "../cubits/rhymes-state";
+import RhymesBloc from "../bloc/rhymes-bloc";
+import { GetRhymesEvent } from "../bloc/rhymes-event";
+import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes-state";
 
 const WordRhymePage: React.FC = () => {
-  const [rhymesState, {getRhymes}] = useBloc(RhymesCubit);
+  const rhymesBloc = new RhymesBloc(new WordRepositoryImpl(new WordRemoteDatasourceImpl(axios.create({ baseURL: "https://api.datamuse.com" }))));
 
-  const onInputChange = async (text: string) => {
-    getRhymes(text);
+  const handleChangeText = (text: string) => {
+    rhymesBloc.add(new GetRhymesEvent(text));
   }
 
   const buildRhymes = (state: RhymesState) => {
-    if(state instanceof RhymesInitial) {
-      return buildInitial();
-    } else if(state instanceof RhymesLoading) {
-      return buildLoading();
-    } else if(state instanceof RhymesLoaded) {
-      return buildLoaded(state.rhymes);
-    } else if(state instanceof RhymesError) {
-      return buildError(state.message);
+    switch (state.constructor) {
+      case RhymesLoading:
+        return buildLoading();
+      case RhymesLoaded:
+        return buildLoaded((state as RhymesLoaded).rhymes);
+      case RhymesError:
+        return buildError((state as RhymesError).message);
+      default:
+        return buildInitial();
     }
   }
 
@@ -33,7 +38,11 @@ const WordRhymePage: React.FC = () => {
   }
 
   const buildLoaded = (rhymes: Word[]) => {
-    return <FlatList data={rhymes} renderItem={({item}) => <Text>{item.word}</Text>} />
+    return <FlatList 
+      keyExtractor={(item, _) => item.word}
+      data={rhymes}
+      renderItem={({item}) => <Text>{item.word}</Text>}
+    />
   }
 
   const buildError = (message: string) => {
@@ -41,8 +50,11 @@ const WordRhymePage: React.FC = () => {
   }
 
   return <SafeAreaView>
-    <TextInput onChangeText={onInputChange} />
-    {buildRhymes(rhymesState)}
+    <TextInput onChangeText={handleChangeText}/>
+    <BlocBuilder<RhymesBloc, RhymesState> 
+      bloc={rhymesBloc}
+      builder={(state) => buildRhymes(state)}
+    />
   </SafeAreaView>;
 }
 
