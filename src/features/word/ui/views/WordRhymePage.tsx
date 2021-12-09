@@ -1,11 +1,12 @@
 import { BlocBuilder } from "@felangel/react-bloc";
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, SafeAreaView, Text, TextInput, StyleSheet } from "react-native";
 import { container } from "tsyringe";
 import Word from "../../domain/entities/word";
 import RhymesBloc from "../bloc/rhymes-bloc";
 import { GetRhymesEvent } from "../bloc/rhymes-event";
 import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes-state";
+import debounce from 'lodash/debounce';
 
 const WordRhymePage: React.FC = () => {
   const rhymesBloc = container.resolve(RhymesBloc);
@@ -13,6 +14,8 @@ const WordRhymePage: React.FC = () => {
   const handleChangeText = (text: string) => {
     rhymesBloc.add(new GetRhymesEvent(text));
   }
+
+  const [debouncedHandleChangeText] = useState(() => debounce(handleChangeText, 500));
 
   const buildRhymes = (state: RhymesState) => {
     switch (state.constructor) {
@@ -27,13 +30,9 @@ const WordRhymePage: React.FC = () => {
     }
   }
 
-  const buildInitial = () => {
-    return <Text>Enter a word to see rhymes</Text>
-  }
+  const buildInitial = () => <Text>Enter a word to see rhymes</Text>;
 
-  const buildLoading = () => {
-    return <Text>Loading...</Text>;
-  }
+  const buildLoading = () => <Text>Loading...</Text>;
 
   const buildLoaded = (rhymes: Word[]) => {
     return <FlatList 
@@ -43,14 +42,12 @@ const WordRhymePage: React.FC = () => {
     />
   }
 
-  const buildError = (message: string) => {
-    return <Text>{message}</Text>;
-  }
+  const buildError = (message: string) => <Text>{message}</Text>;
 
   return <SafeAreaView>
     <TextInput 
       style={styles.input}
-      onChangeText={handleChangeText}
+      onChangeText={debouncedHandleChangeText}
       placeholder="Search for words that rhyme with..."
     />
     <BlocBuilder<RhymesBloc, RhymesState> 
