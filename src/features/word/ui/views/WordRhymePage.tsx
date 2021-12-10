@@ -45,13 +45,6 @@ const WordRhymePage: React.FC = () => {
 }
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-  },
   item: {
     padding: 10,
     fontSize: 18,
