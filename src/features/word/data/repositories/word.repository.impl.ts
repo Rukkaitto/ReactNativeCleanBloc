@@ -1,9 +1,9 @@
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 import Word from "../../domain/entities/word";
-import WordRepository from "../../domain/repositories/repository";
-import WordRemoteDatasource from "../datasources/remote-datasource";
+import WordRepository from "../../domain/repositories/word.repository";
+import WordRemoteDatasource from "../datasources/word.remote.datasource";
 
-@injectable()
+@singleton()
 export class WordRepositoryImpl implements WordRepository {
   constructor(@inject('WordRemoteDatasource') private remoteDatasource: WordRemoteDatasource) { }
 

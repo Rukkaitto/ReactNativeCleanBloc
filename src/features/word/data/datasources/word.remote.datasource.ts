@@ -1,12 +1,12 @@
 import { AxiosInstance } from "axios";
-import { inject, injectable } from "tsyringe";
-import WordModel from "../models/word-model";
+import { inject, singleton } from "tsyringe";
+import WordModel from "../models/word.model";
 
 export default interface WordRemoteDatasource {
   getRhymes(word: String): Promise<WordModel[]>;
 }
 
-@injectable()
+@singleton()
 export class WordRemoteDatasourceImpl implements WordRemoteDatasource {
   constructor(@inject('axios') private axiosInstance: AxiosInstance) { }
 

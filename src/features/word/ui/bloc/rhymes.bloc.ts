@@ -1,8 +1,8 @@
 import { Bloc } from "@felangel/bloc";
 import { inject, injectable } from "tsyringe";
-import WordRepository from "../../domain/repositories/repository";
-import { GetRhymesEvent, RhymesEvent } from "./rhymes-event";
-import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "./rhymes-state";
+import WordRepository from "../../domain/repositories/word.repository";
+import { GetRhymesEvent, RhymesEvent } from "./rhymes.event";
+import { RhymesError, RhymesInitial, RhymesLoaded, RhymesLoading, RhymesState } from "./rhymes.state";
 
 @injectable()
 export default class RhymesBloc extends Bloc<RhymesEvent, RhymesState> {

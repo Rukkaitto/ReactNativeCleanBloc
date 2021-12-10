@@ -1,15 +1,15 @@
 import { BlocBuilder } from "@felangel/react-bloc";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FlatList, SafeAreaView, Text, TextInput, StyleSheet } from "react-native";
-import { container } from "tsyringe";
 import Word from "../../domain/entities/word";
-import RhymesBloc from "../bloc/rhymes-bloc";
-import { GetRhymesEvent } from "../bloc/rhymes-event";
-import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes-state";
+import RhymesBloc from "../bloc/rhymes.bloc";
+import { GetRhymesEvent } from "../bloc/rhymes.event";
+import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes.state";
 import debounce from 'lodash/debounce';
+import { RhymesBlocContext } from "../context/rhymes.bloc.context";
 
 const WordRhymePage: React.FC = () => {
-  const rhymesBloc = container.resolve(RhymesBloc);
+  const rhymesBloc = useContext(RhymesBlocContext);
 
   const handleChangeText = (text: string) => {
     rhymesBloc.add(new GetRhymesEvent(text));
@@ -42,7 +42,7 @@ const WordRhymePage: React.FC = () => {
     />
   }
 
-  const buildError = (message: string) => <Text>{message}</Text>;
+  const buildError = (message: string) => <Text style={styles.error}>{message}</Text>;
 
   return <SafeAreaView>
     <TextInput 
@@ -70,6 +70,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
   },
+  error: {
+    color: 'red',
+  }
 });
 
 export default WordRhymePage;
