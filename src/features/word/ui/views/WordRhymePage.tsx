@@ -1,22 +1,13 @@
 import { BlocBuilder } from "@felangel/react-bloc";
-import React, { useContext, useState } from "react";
-import { FlatList, SafeAreaView, Text, TextInput, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { FlatList, SafeAreaView, StyleSheet, Text } from "react-native";
 import Word from "../../domain/entities/word";
 import RhymesBloc from "../bloc/rhymes.bloc";
-import { GetRhymesEvent } from "../bloc/rhymes.event";
 import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes.state";
-import debounce from 'lodash/debounce';
+import WordRhymeTextField from "../components/WordRhymeTextField";
 import { RhymesBlocContext } from "../context/rhymes.bloc.context";
 
 const WordRhymePage: React.FC = () => {
-  const rhymesBloc = useContext(RhymesBlocContext);
-
-  const handleChangeText = (text: string) => {
-    rhymesBloc.add(new GetRhymesEvent(text));
-  }
-
-  const [debouncedHandleChangeText] = useState(() => debounce(handleChangeText, 500));
-
   const buildRhymes = (state: RhymesState) => {
     switch (state.constructor) {
       case RhymesLoading:
@@ -45,13 +36,9 @@ const WordRhymePage: React.FC = () => {
   const buildError = (message: string) => <Text style={styles.error}>{message}</Text>;
 
   return <SafeAreaView>
-    <TextInput 
-      style={styles.input}
-      onChangeText={debouncedHandleChangeText}
-      placeholder="Search for words that rhyme with..."
-    />
+    <WordRhymeTextField/>
     <BlocBuilder<RhymesBloc, RhymesState> 
-      bloc={rhymesBloc}
+      bloc={useContext(RhymesBlocContext)}
       builder={(state) => buildRhymes(state)}
     />
   </SafeAreaView>;
