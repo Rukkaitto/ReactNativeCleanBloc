@@ -1,19 +1,13 @@
 import { BlocBuilder } from "@felangel/react-bloc";
-import React from "react";
-import { FlatList, SafeAreaView, Text, TextInput, StyleSheet } from "react-native";
-import { container } from "tsyringe";
+import React, { useContext } from "react";
+import { FlatList, SafeAreaView, StyleSheet, Text } from "react-native";
 import Word from "../../domain/entities/word";
-import RhymesBloc from "../bloc/rhymes-bloc";
-import { GetRhymesEvent } from "../bloc/rhymes-event";
-import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes-state";
+import RhymesBloc from "../bloc/rhymes.bloc";
+import { RhymesError, RhymesLoaded, RhymesLoading, RhymesState } from "../bloc/rhymes.state";
+import WordRhymeTextField from "../components/WordRhymeTextField";
+import { RhymesBlocContext } from "../context/rhymes.bloc.context";
 
 const WordRhymePage: React.FC = () => {
-  const rhymesBloc = container.resolve(RhymesBloc);
-
-  const handleChangeText = (text: string) => {
-    rhymesBloc.add(new GetRhymesEvent(text));
-  }
-
   const buildRhymes = (state: RhymesState) => {
     switch (state.constructor) {
       case RhymesLoading:
@@ -27,13 +21,9 @@ const WordRhymePage: React.FC = () => {
     }
   }
 
-  const buildInitial = () => {
-    return <Text>Enter a word to see rhymes</Text>
-  }
+  const buildInitial = () => <Text>Enter a word to see rhymes</Text>;
 
-  const buildLoading = () => {
-    return <Text>Loading...</Text>;
-  }
+  const buildLoading = () => <Text>Loading...</Text>;
 
   const buildLoaded = (rhymes: Word[]) => {
     return <FlatList 
@@ -43,36 +33,26 @@ const WordRhymePage: React.FC = () => {
     />
   }
 
-  const buildError = (message: string) => {
-    return <Text>{message}</Text>;
-  }
+  const buildError = (message: string) => <Text style={styles.error}>{message}</Text>;
 
   return <SafeAreaView>
-    <TextInput 
-      style={styles.input}
-      onChangeText={handleChangeText}
-      placeholder="Search for words that rhyme with..."
-    />
+    <WordRhymeTextField/>
     <BlocBuilder<RhymesBloc, RhymesState> 
-      bloc={rhymesBloc}
+      bloc={useContext(RhymesBlocContext)}
       builder={(state) => buildRhymes(state)}
     />
   </SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-  },
   item: {
     padding: 10,
     fontSize: 18,
     height: 44,
   },
+  error: {
+    color: 'red',
+  }
 });
 
 export default WordRhymePage;
